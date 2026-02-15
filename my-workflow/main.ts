@@ -4,6 +4,7 @@ import {
   handler,
   consensusIdenticalAggregation,
   ok,
+  bytesToHex,
   type ConfidentialHTTPSendRequester,
   type Runtime,
   Runner,
@@ -38,6 +39,8 @@ function bytesToBase64(bytes: Uint8Array): string {
   return out
 }
 
+// --- DEMO ONLY: base64ToBytes and the hex logging below would live in the consuming app. ---
+// In prod, you'd just return result.bodyBase64 and handle decryption in your consuming application.
 function base64ToBytes(base64: string): Uint8Array {
   const len = base64.replace(/=+$/, "").length
   const n = Math.floor((len * 3) / 4)
@@ -55,12 +58,6 @@ function base64ToBytes(base64: string): Uint8Array {
     if (d >= 0 && j < n) out[j++] = ((c & 3) << 6) | d
   }
   return out
-}
-
-function bytesToHex(bytes: Uint8Array): string {
-  return Array.from(bytes)
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("")
 }
 
 // Fetch with response encryption: enclave encrypts body before it leaves; we get encrypted bytes.
@@ -101,7 +98,7 @@ const DECRYPT_STEPS = [
   "Secret key: use your AES_KEY_ALL value from .env (64 hex chars)",
 ].join(" — ")
 
-// Main workflow handler: output only values needed for CipherTools AES-GCM decrypt.
+// Main workflow handler. In prod you'd just return result.bodyBase64; decryption happens in the consuming app.
 const onCronTrigger = (runtime: Runtime<Config>): string => {
   const confHTTPClient = new ConfidentialHTTPClient()
 
@@ -113,12 +110,13 @@ const onCronTrigger = (runtime: Runtime<Config>): string => {
     )(runtime.config)
     .result()
 
+  // DEMO ONLY — In prod, you'd just return result.bodyBase64 and handle decryption in your consuming application.
   const bodyBytes = base64ToBytes(result.bodyBase64)
   const nonceBytes = bodyBytes.slice(0, 12)
   const ciphertextAndTagBytes = bodyBytes.slice(12)
-
-  const nonceHex = bytesToHex(nonceBytes)
-  const ciphertextAndTagHex = bytesToHex(ciphertextAndTagBytes)
+  // SDK bytesToHex is 0x-prefixed; CipherTools expects raw hex, so we slice(2).
+  const nonceHex = bytesToHex(nonceBytes).slice(2)
+  const ciphertextAndTagHex = bytesToHex(ciphertextAndTagBytes).slice(2)
 
   runtime.log("--- Copy-paste for CipherTools (https://www.ciphertools.org/tools/aes/gcm) ---")
   runtime.log("Ciphertext + tag (paste into Ciphertext + tag input, hex):")

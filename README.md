@@ -25,6 +25,8 @@ The workflow calls [API Ninjas Jokes API](https://api.api-ninjas.com/api/jokes) 
 
 From the **project root**, use a `.env` file. The simulator maps secrets from `secrets.yaml` to env vars.
 
+**Note:** In the workflow config (`config.staging.json` / `config.production.json`) you may see `"owner": ""`. This is intentional for local simulation: there is no real interaction with the Vault DON here, so `owner` is not required. In production, you would set the owner for vault secret access.
+
 - **API Ninjas key** (DON secret `myApiKey`):
   ```
   MY_API_KEY_ALL=<your-api-ninjas-key>

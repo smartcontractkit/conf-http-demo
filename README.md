@@ -31,7 +31,7 @@ From the **project root**, use a `.env` file. The simulator maps secrets from `s
   ```
   MY_API_KEY_ALL=<your-api-ninjas-key>
   ```
-  Get a free key at [api.ninjas.com](https://api.ninjas.com/register).
+  Get a free key at [api-ninjas.com](https://api-ninjas.com/).
 
 - **AES-256 key** (DON secret `san_marino_aes_gcm_encryption_key`). Same value is used as **Secret key** in CipherTools when decrypting:
   ```
@@ -49,7 +49,17 @@ cp .env.example .env
 
 ---
 
-## 2. Install dependencies
+## 2. Install CRE CLI and log in
+
+Install the Chainlink CRE CLI and authenticate so you can simulate and deploy workflows. See [Installing the CRE CLI](https://docs.chain.link/cre/getting-started/cli-installation) for your platform (macOS, Linux, or Windows). Then log in:
+
+```bash
+cre login
+```
+
+---
+
+## 3. Install dependencies
 
 If `bun` is not installed, see https://bun.com/docs/installation.
 
@@ -59,7 +69,7 @@ cd my-workflow && bun install
 
 ---
 
-## 3. Simulate the workflow
+## 4. Simulate the workflow
 
 From the **project root**:
 
@@ -72,4 +82,14 @@ The console will print, under clear labels:
 - **Nonce/IV** — one line of **hex**; paste into the “Nonce / IV” field on [CipherTools AES-GCM](https://www.ciphertools.org/tools/aes/gcm).
 - **Ciphertext + tag** — one line of **hex**; paste into the “Ciphertext + tag input” field.
 
-On CipherTools set: **Operation** = Decrypt + verify tag, **Tag length** = 128 bits, **Key size** = 256 bit, **Secret key** = your `AES_KEY_ALL` value from `.env`. Then paste the two values above; the decrypted plaintext is the API response (e.g. JSON with a joke).
+On CipherTools set: **Operation** = Decrypt + verify tag, **Tag length** = 128 bits, **Key size** = 256 bit, **Secret key** = your `AES_KEY_ALL` value from `.env`. Then paste the two values above. For the encrypted Ciphertext+tag input, ensure you change the type dropdown from "Base64" to "Hex". The decrypted plaintext is the API response (e.g. JSON with a joke).
+
+---
+
+## Troubleshooting
+
+**"HTTP request failed with status: 400"** — API Ninjas returns 400 when the `X-Api-Key` header is missing or invalid. Check that:
+
+1. You have a `.env` file at the **project root** (same directory as `secrets.yaml`) with `MY_API_KEY_ALL=<your-api-key>`.
+2. You run `cre workflow simulate ...` from the **project root** so the simulator can load `.env` and resolve the `myApiKey` secret.
+3. Your key is valid — get a free key at [api-ninjas.com](https://api-ninjas.com/).

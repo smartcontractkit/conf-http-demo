@@ -22,6 +22,10 @@ The workflow calls [API Ninjas Jokes API](https://api.api-ninjas.com/api/jokes) 
 ---
 
 ## 1. Environment / secrets (for simulation)
+Clone the repo to local
+```
+clone https://github.com/smartcontractkit/conf-http-demo.git
+```
 
 From the **project root**, use a `.env` file. The simulator maps secrets from `secrets.yaml` to env vars.
 
@@ -79,10 +83,18 @@ cre workflow simulate ./my-workflow --target=staging-settings
 
 The console will print, under clear labels:
 
-- **Nonce/IV** — one line of **hex**; paste into the “Nonce / IV” field on [CipherTools AES-GCM](https://www.ciphertools.org/tools/aes/gcm).
+- **Nonce/IV** — one line of **hex**; paste into the “Nonce / IV” field on [CipherTools AES-GCM](https://www.ciphertools.org/tools/aes/gcm) after the page is configured with set below.
 - **Ciphertext + tag** — one line of **hex**; paste into the “Ciphertext + tag input” field.
 
-On CipherTools set: **Operation** = Decrypt + verify tag, **Tag length** = 128 bits, **Key size** = 256 bit, **Secret key** = your `AES_KEY_ALL` value from `.env`. Then paste the two values above. For the encrypted Ciphertext+tag input, ensure you change the type dropdown from "Base64" to "Hex". The decrypted plaintext is the API response (e.g. JSON with a joke).
+On CipherTools set: 
+- **Operation** = Decrypt + verify tag
+- **Tag length** = 128 bits
+- **Key size** = 256 bit
+- **Secret key** = your `AES_KEY_ALL` value from `.env`. 
+
+Then paste the two values above. **Please note**, for the encrypted Ciphertext+tag input, ensure you change the type dropdown from "Base64" to "Hex". 
+
+Then click the button "Calculate" and the decrypted plaintext is shown on "Plain output". The decrypted text is the API response (e.g. JSON with a joke).
 
 ---
 

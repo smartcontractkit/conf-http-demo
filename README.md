@@ -31,7 +31,7 @@ From the **project root**, use a `.env` file. The simulator maps secrets from `s
   ```
   MY_API_KEY_ALL=<your-api-ninjas-key>
   ```
-  Get a free key at [api.ninjas.com](https://api.ninjas.com/register).
+  Get a free key at [api-ninjas.com](https://api-ninjas.com/)).
 
 - **AES-256 key** (DON secret `san_marino_aes_gcm_encryption_key`). Same value is used as **Secret key** in CipherTools when decrypting:
   ```
